@@ -2,7 +2,7 @@
 rem === Начало скрипта ===
 
 rem --- О версии ---
-rem Версия:	1.0
+rem Версия:	1.0.1
 rem Автор:	LeoVLDM
 rem GitHub:	https://github.com/LeoVLDM/bat_pack-up.git
 rem Лицензия:	Свободное использование, распростраренение, модификация. Всё "как есть", на свой страх и риск :)
@@ -10,6 +10,9 @@ rem Описание:	Архивирование папки с проверкой и последующим копированием на друг
 rem ----------------
 
 rem === Начало параметрам ===
+
+rem Текущий путь
+set pt=%~dp1
 
 rem --Файл архива
 set af=%1
@@ -21,7 +24,7 @@ rem --Путь к WinRAR
 set winrar="C:\Program Files\WinRAR\winrar.exe"
 
 rem --Параметры архивирования
-set par=-k -s -r -m5 -df -rr -ibck -ep1 -ilog%~dp0\winrar.log -inul
+set par=-k -s -r -m5 -df -rr -ibck -ep1 -ilog%~dp0winrar.log -inul
 rem -k	Заблокировать архив 
 rem -s	Создать непрерывный архив 
 rem -r	Включить в обработку вложенные папки 
@@ -42,7 +45,7 @@ rem Параметр обязателен
 if "%af%"=="" goto :starterror
 
 rem Записывать всё в лог-файл вместо вывода на экран
-set OUTPUT=%~n0.log
+set OUTPUT=%~dp0%~n0.log
 if "%STDOUT_REDIRECTED%" == "" (
     set STDOUT_REDIRECTED=yes
     cmd.exe /c %0 %* >>%OUTPUT%
@@ -57,8 +60,10 @@ echo %dt%	=== Начало программы ===
 
 rem --- Архивирование ---
 call :times
+echo %dt%		Строка запуска:
+echo %dt%			%winrar% a %par% %af%.rar %af%
 echo %dt%		Начато архивирование ...
-%winrar% a %par% %af% %af%
+%winrar% a %par% %af%.rar %af%
 set e=%ERRORLEVEL%
 if "%e%" neq "0" goto :error_arch
 call :times
